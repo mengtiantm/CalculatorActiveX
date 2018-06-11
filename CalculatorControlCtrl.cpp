@@ -10,6 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
+#define ADD		1
+#define SUB		2
+#define MUL		3
+#define DIV		4
+
 IMPLEMENT_DYNCREATE(CCalculatorControlCtrl, COleControl)
 
 // Message map
@@ -221,32 +226,32 @@ void CCalculatorControlCtrl::OnDraw(
 	// TODO: Replace the following code with your own drawing code.
 	/*pdc->FillRect(rcBounds, CBrush::FromHandle((HBRUSH)GetStockObject(WHITE_BRUSH)));
 	pdc->Ellipse(rcBounds);*/
-	// ÉèÖÃ¿Ø¼şµÄ±³¾°ÑÕÉ«ÎªÏóÑÀ»Ò
+	// è®¾ç½®æ§ä»¶çš„èƒŒæ™¯é¢œè‰²ä¸ºè±¡ç‰™ç°
 	CBrush brush(RGB(251, 255, 242));
 	pdc->FillRect(rcBounds, &brush);
-	// ÉèÖÃÎÄ±¾×ÖÌåµÄÑÕÉ«¡¢¶ÔÆë·½Ê½¡¢±³¾°Í¸Ã÷ 
+	// è®¾ç½®æ–‡æœ¬å­—ä½“çš„é¢œè‰²ã€å¯¹é½æ–¹å¼ã€èƒŒæ™¯é€æ˜ 
 	pdc->SetTextColor(RGB(255, 255, 255));
 	pdc->SetTextAlign(TA_CENTER);
 	pdc->SetBkMode(TRANSPARENT);
-	// »æÖÆ3¸öÔ²  
-	// ÉèÖÃÔ²µÄ±³¾°É«ÎªºÚÉ«  
+	// ç»˜åˆ¶3ä¸ªåœ†  
+	// è®¾ç½®åœ†çš„èƒŒæ™¯è‰²ä¸ºé»‘è‰²  
 	CBrush brushCircle(RGB(0, 0, 0));
-	// ÉèÖÃÔ²ĞÄÎ»ÖÃ  
+	// è®¾ç½®åœ†å¿ƒä½ç½®  
 	POINT p1 = { 70, 150 };
 	POINT p2 = { 230, p1.y };
 	POINT p3 = { (p1.x + p2.x) / 2, m_Direction ? p1.y + 60 : p1.y - 60 };
-	// ÉèÖÃÔ²µÄ°ë¾¶  
+	// è®¾ç½®åœ†çš„åŠå¾„  
 	int radious = 18;
-	// »­Ô²  
+	// ç”»åœ†  
 	CBrush *pBrush = pdc->SelectObject(&brushCircle);
 	pdc->Ellipse(p1.x - radious, p1.y - radious, p1.x + radious, p1.y + radious);
 	pdc->Ellipse(p2.x - radious, p2.y - radious, p2.x + radious, p2.y + radious);
 	pdc->Ellipse(p3.x - radious, p3.y - radious, p3.x + radious, p3.y + radious);
-	// Á¬½ÓÏß  
+	// è¿æ¥çº¿  
 	pdc->MoveTo(p1);
 	pdc->LineTo(p3);
 	pdc->LineTo(p2);
-	// ÔÚÔ²ÖĞĞ´ÈëÊıÖµ
+	// åœ¨åœ†ä¸­å†™å…¥æ•°å€¼
 	CString strMsg;
 	strMsg.Format(L"%d", m_a);
 	pdc->TextOut(p1.x, p1.y - 9, strMsg);
@@ -297,7 +302,7 @@ void CCalculatorControlCtrl::SetNumber(LONG num1, LONG num2, LONG type)
 	m_a = num1;
 	m_b = num2;
 	m_c = Arithmetic(num1, num2, type);
-	// ÖØ»æ¿Ø¼ş£¬µ÷ÓÃÎÒÃÇµÄMCdº¯Êı½áËã½á¹û²¢ÏÔÊ¾  
+	// é‡ç»˜æ§ä»¶ï¼Œè°ƒç”¨æˆ‘ä»¬çš„MCdå‡½æ•°ç»“ç®—ç»“æœå¹¶æ˜¾ç¤º  
 	Invalidate();
 }
 
@@ -308,22 +313,26 @@ LONG CCalculatorControlCtrl::Arithmetic(LONG num1, LONG num2, LONG type)
 
 	// TODO: Add your dispatch handler code here
 	long iRet = 0;
-	if (type == 1)// addition
+	if (type == ADD)// addition
 	{
 		iRet = num1 + num2;
 	}
-	else if (type == 2)// Subtraction
+	else if (type == SUB)// Subtraction
 	{
 		iRet = num1 - num2;
 	}
-	else if (type == 3)// multiplication
+	else if (type == MUL)// multiplication
 	{
 		iRet = num1 * num2;
 	}
-	else// division
+	else if (type == DIV)// division
 	{
 		iRet = num1 / num2;
 	}
+	else
+	{
+		iRet = num1 + num2;
+	}	
 	return iRet;
 }
 
@@ -331,11 +340,9 @@ LONG CCalculatorControlCtrl::Arithmetic(LONG num1, LONG num2, LONG type)
 void CCalculatorControlCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	/*CString strMsgValue;
+	CString strMsgValue;
 	strMsgValue.Format(L"%d", m_c);
-	if (InCircle(point))
-		FirstMsg(strMsgValue);
-*/
+	FirstMsg(strMsgValue);
 	COleControl::OnLButtonDown(nFlags, point);
 }
 
@@ -347,22 +354,6 @@ void CCalculatorControlCtrl::OnDirectionChanged()
 	// TODO: Add your property handler code here
 	Invalidate();
 	SetModifiedFlag();
-}
-
-BOOL CCalculatorControlCtrl::InCircle(CPoint& point)
-{
-	CRect rc;
-	GetClientRect(rc);
-	// Determine radii
-	double a = (rc.right - rc.left) / 2;
-	double b = (rc.bottom - rc.top) / 2;
-
-	// Determine x, y
-	double x = point.x - (rc.left + rc.right) / 2;
-	double y = point.y - (rc.top + rc.bottom) / 2;
-
-	// Apply ellipse formula
-	return ((x * x) / (a * a) + (y * y) / (b * b) <= 1);
 }
 
 
