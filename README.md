@@ -1,2 +1,3 @@
 # CalculatorActiveX
-ActiveX control demo
+Hi,eveyone!
+This is an ActiveX control demo（simple calculator）
