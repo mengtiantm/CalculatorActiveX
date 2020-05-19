@@ -1,0 +1,59 @@
+// CalculatorControl.idl : type library source for ActiveX Control project.
+
+// This file will be processed by the MIDL compiler tool to
+// produce the type library (CalculatorControl.tlb) that will become a resource in
+// CalculatorControl.ocx.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(91D72424-8F6F-4BB8-8664-86DCE77E441A), version(1.0),
+  control ]
+library CalculatorControlLib
+{
+	importlib(STDOLE_TLB);
+
+	//  Primary dispatch interface for CCalculatorControlCtrl
+	[ 
+		uuid(832E3E67-3909-4F14-BDE5-FAC01E4A17BB)	
+	]
+	dispinterface _DCalculatorControl
+	{
+		properties:
+			[id(DISPID_BACKCOLOR)] OLE_COLOR BackColor;
+			[id(6)] VARIANT_BOOL Direction;
+	methods:
+
+			[id(DISPID_ABOUTBOX)] void AboutBox();
+			[id(2), helpstring("Set input value")] void SetNumber(LONG num1, LONG num2, LONG type);
+			[id(3)] LONG Arithmetic(LONG num1, LONG num2, LONG type);
+	};
+
+	//  Event dispatch interface for CCalculatorControlCtrl
+
+	[ 
+		uuid(5CC74BA3-6875-4496-962E-93E0775E21D6)	
+	]
+	dispinterface _DCalculatorControlEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			[id(4)] void SecondMsg(BSTR eValue);
+			[id(5)] void FirstMsg(BSTR eValue);
+			[id(DISPID_CLICK)] void Click();
+			[id(6)] void TestEvent(BSTR msg);
+	};
+
+	//  Class information for CCalculatorControlCtrl
+	[
+		uuid(16C40025-1142-4E30-A991-0397253B393A)
+	]
+	coclass CalculatorControl
+	{
+		[default] dispinterface _DCalculatorControl;
+		[default, source] dispinterface _DCalculatorControlEvents;
+	};
+
+};
